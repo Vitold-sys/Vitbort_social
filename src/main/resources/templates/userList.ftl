@@ -9,6 +9,8 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">E-mail</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Phone number</th>
             <th scope="col">Role</th>
             <th scope="col">Edit</th>
             <th></th>
@@ -19,6 +21,8 @@
             <tr>
                 <th class="info " scope="col">${user.username}</th>
                 <th class="info " scope="col">${user.email}</th>
+                <th class="info " scope="col">${user.gender}</th>
+                <th class="info " scope="col">${user.phoneNumber}</th>
                 <th><#list user.roles as role>${role}<#sep>, </#list></th>
                 <th><a href="/user/${user.id}">edit</a></th>
             </tr>

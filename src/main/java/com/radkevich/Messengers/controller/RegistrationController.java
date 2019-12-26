@@ -34,6 +34,8 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(
+            @RequestParam String gender,
+            @RequestParam String phoneNumber,
             @RequestParam("password2") String passwordConfirm,
             @RequestParam("g-recaptcha-response") String captchaResponce,
             @Valid User user,

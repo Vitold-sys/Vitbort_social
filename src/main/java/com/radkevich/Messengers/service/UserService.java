@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Sweater. Please, visit next link: http://localhost:8080/activate/%s",
+                            "Welcome to Vitbort. Please, visit next link: http://localhost:8080/activate/%s",
                     user.getUsername(),
                     user.getActivationCode()
             );
@@ -89,8 +89,10 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    public void updateProfile(User user, String password, String email) {
+    public void updateProfile(User user, String password, String gender, String phoneNumber, String email) {
         String userEmail = user.getEmail();
+        boolean isGenderChanged = (gender != null);
+        boolean isPhoneChanged = (phoneNumber != null);
         boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
                 (userEmail != null && !userEmail.equals(email));
         if (isEmailChanged) {
@@ -98,6 +100,12 @@ public class UserService implements UserDetailsService {
             if (!StringUtils.isEmpty(email)) {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
+        }
+        if (isGenderChanged) {
+            user.setGender(gender);
+        }
+        if (isPhoneChanged) {
+            user.setPhoneNumber(phoneNumber);
         }
         if (!StringUtils.isEmpty(password)) {
             user.setPassword(password);

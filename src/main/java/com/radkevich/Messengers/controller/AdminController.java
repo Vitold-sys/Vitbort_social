@@ -48,6 +48,8 @@ public class AdminController {
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("username", user.getUsername());
+        model.addAttribute("gender", user.getGender());
+        model.addAttribute("phoneNumber", user.getPhoneNumber());
         model.addAttribute("email", user.getEmail());
         return "profile";
     }
@@ -55,10 +57,12 @@ public class AdminController {
     @PostMapping("profile")
     public String updateProfile(
             @AuthenticationPrincipal User user,
+            @RequestParam String gender,
+            @RequestParam String phoneNumber,
             @RequestParam String password,
             @RequestParam String email
     ) {
-        userService.updateProfile(user, password, email);
-        return "redirect:/user/profile";
+        userService.updateProfile(user, password, gender, phoneNumber, email);
+        return "redirect:/";
     }
 }
