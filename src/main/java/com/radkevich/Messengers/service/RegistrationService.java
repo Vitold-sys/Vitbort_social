@@ -11,10 +11,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class RegistrationService {
@@ -32,8 +36,8 @@ public class RegistrationService {
     public String checkUser(@RequestParam("password2") String passwordConfirm,
                             @RequestParam("g-recaptcha-response") String captchaResponce,
                             @Valid User user,
-                            BindingResult bindingResult, Model model)
-    {
+                            @RequestParam("file") MultipartFile file,
+                            BindingResult bindingResult, Model model) throws IOException {
         String url = String.format(CAPTCHA_URL, secret, captchaResponce);
         CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
         if (!response.isSuccess()) {
@@ -51,7 +55,7 @@ public class RegistrationService {
             model.mergeAttributes(errors);
             return "registration";
         }
-        if (!userService.addUser(user)) {
+        if (!userService.addUser(user, file)){
             model.addAttribute("usernameError", "User exists!");
             return "registration";
         }

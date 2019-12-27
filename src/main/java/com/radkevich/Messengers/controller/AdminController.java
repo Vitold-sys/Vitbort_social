@@ -10,7 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -38,10 +40,11 @@ public class AdminController {
     @PostMapping
     public String userSave(
             @RequestParam String username,
+            @RequestParam(required = false) MultipartFile file,
             @RequestParam Map<String, String> form,
             @RequestParam("userId") User user
-    ) {
-        userService.saveUser(user, username, form);
+    ) throws IOException {
+        userService.saveUser(user, username, file, form);
         return "redirect:/user";
     }
 
@@ -51,6 +54,7 @@ public class AdminController {
         model.addAttribute("gender", user.getGender());
         model.addAttribute("phoneNumber", user.getPhoneNumber());
         model.addAttribute("email", user.getEmail());
+        model.addAttribute("avatar", user.getFilename());
         return "profile";
     }
 
@@ -64,5 +68,39 @@ public class AdminController {
     ) {
         userService.updateProfile(user, password, gender, phoneNumber, email);
         return "redirect:/";
+    }
+
+    @GetMapping("subscribe/{user}")
+    public String subscribe(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user
+    ) {
+        userService.subscribe(currentUser, user);
+        return "redirect:/user-messages/" + user.getId();
+    }
+
+    @GetMapping("unsubscribe/{user}")
+    public String unsubscribe(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user
+    ) {
+        userService.unsubscribe(currentUser, user);
+        return "redirect:/user-messages/" + user.getId();
+    }
+
+    @GetMapping("{type}/{user}/list")
+    public String userList(
+            Model model,
+            @PathVariable User user,
+            @PathVariable String type
+    ) {
+        model.addAttribute("userChannel", user);
+        model.addAttribute("type", type);
+        if ("subscriptions".equals(type)) {
+            model.addAttribute("users", user.getSubscriptions());
+        } else {
+            model.addAttribute("users", user.getSubscribers());
+        }
+        return "subscriptions";
     }
 }

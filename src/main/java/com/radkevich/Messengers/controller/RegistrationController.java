@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Controller
 public class RegistrationController {
@@ -36,13 +38,15 @@ public class RegistrationController {
     public String addUser(
             @RequestParam String gender,
             @RequestParam String phoneNumber,
+            @RequestParam String info,
+            @RequestParam("file") MultipartFile file,
             @RequestParam("password2") String passwordConfirm,
             @RequestParam("g-recaptcha-response") String captchaResponce,
             @Valid User user,
             BindingResult bindingResult,
             Model model
-    ) {
-        registrationService.checkUser(passwordConfirm, captchaResponce, user, bindingResult, model);
+    ) throws IOException {
+        registrationService.checkUser(passwordConfirm, captchaResponce, user, file, bindingResult, model);
         return "login";
     }
 

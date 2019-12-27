@@ -5,18 +5,27 @@ import com.radkevich.Messengers.repository.UserRepo;
 import com.radkevich.Messengers.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
+    @Value("${upload.path.avatar}")
+    private String uploadPathAvatar;
+
     @Autowired
     private UserRepo userRepo;
 
@@ -35,7 +44,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public boolean addUser(User user) {
+    public boolean addUser(User user, MultipartFile file) throws IOException {
         User userFromDb = userRepo.findByUsername(user.getUsername());
         if (userFromDb != null) {
             return false;
@@ -44,6 +53,7 @@ public class UserService implements UserDetailsService {
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        saveAvatar(user, file);
         userRepo.save(user);
         sendMessage(user);
         return true;
@@ -74,7 +84,7 @@ public class UserService implements UserDetailsService {
     public List<User> findAll() {
         return userRepo.findAll();
     }
-    public void saveUser(User user, String username, Map<String, String> form) {
+    public void saveUser(User user, String username, MultipartFile file, Map<String, String> form) throws IOException {
         user.setUsername(username);
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
@@ -86,6 +96,7 @@ public class UserService implements UserDetailsService {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
+        saveAvatar(user, file);
         userRepo.save(user);
     }
 
@@ -114,5 +125,28 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged) {
             sendMessage(user);
         }
+    }
+
+    private void saveAvatar(@Valid User user, @RequestParam("file") MultipartFile file) throws IOException {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPathAvatar);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "_" + file.getOriginalFilename();
+            file.transferTo(new File(uploadPathAvatar + "/" + resultFilename));
+            user.setFilename(resultFilename);
+        }
+    }
+
+    public void subscribe(User currentUser, User user) {
+        user.getSubscribers().add(currentUser);
+        userRepo.save(user);
+    }
+
+    public void unsubscribe(User currentUser, User user) {
+        user.getSubscribers().remove(currentUser);
+        userRepo.save(user);
     }
 }

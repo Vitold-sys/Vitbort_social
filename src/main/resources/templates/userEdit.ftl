@@ -4,7 +4,7 @@
 <@c.page>
     User Editor
 
-    <form action="/user" method="post">
+    <form action="/user" method="post" enctype="multipart/form-data">
         <input type="text" name="username" value="${user.username}">
         <#list roles as role>
             <div>

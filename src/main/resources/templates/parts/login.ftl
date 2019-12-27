@@ -1,7 +1,7 @@
 
 
 <#macro login path isRegisterForm>
-    <form action="${path}" method="post">
+    <form action="${path}" method="post" enctype="multipart/form-data">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">User Name :</label>
             <div class="col-sm-6">
@@ -73,6 +73,22 @@
                            class="form-control placeholder=" +375000000000" />
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Profile image:</label>
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file" name="file" id="profileFile">
+                            <label class="custom-file-label" for="profileFile">Browse image</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">User info:</label>
+                <div class="col-sm-6">
+                    <input type="info" name="info" value="<#if user??>${user.info}</#if>"
+                           class="form-control placeholder="Tell something about you" />
+                </div>
+            </div>
             <div class="col-sm-6">
                 <div class="g-recaptcha" data-sitekey="6LfTs8kUAAAAAIqOJn90Fm2zVQ9iqqojCZFfuR_m"></div>
                 <#if captchaError??>
@@ -91,6 +107,6 @@
 <#macro logout>
     <form action="/logout" method="post">
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-        <button class="btn btn-primary" type="submit">Sign Out</button>
+        <button class="btn btn-outline-danger" type="submit">Sign Out</button>
     </form>
 </#macro>
