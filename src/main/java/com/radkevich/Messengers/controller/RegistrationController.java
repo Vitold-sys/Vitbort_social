@@ -36,6 +36,8 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(
+            @RequestParam String name,
+            @RequestParam String surname,
             @RequestParam String gender,
             @RequestParam String phoneNumber,
             @RequestParam String info,

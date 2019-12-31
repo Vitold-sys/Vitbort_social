@@ -48,17 +48,17 @@ public class AdminController {
         return "redirect:/user";
     }
 
-    @GetMapping("profile")
+    @GetMapping("settings")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("gender", user.getGender());
         model.addAttribute("phoneNumber", user.getPhoneNumber());
         model.addAttribute("email", user.getEmail());
         model.addAttribute("avatar", user.getFilename());
-        return "profile";
+        return "settings";
     }
 
-    @PostMapping("profile")
+    @PostMapping("settings")
     public String updateProfile(
             @AuthenticationPrincipal User user,
             @RequestParam String gender,

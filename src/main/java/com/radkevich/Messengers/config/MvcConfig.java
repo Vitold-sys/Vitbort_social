@@ -16,6 +16,9 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${upload.path.avatar}")
     private String uploadPathAvatar;
 
+    @Value("${upload.path.posts}")
+    private String uploadPathPost;
+
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
@@ -29,6 +32,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/img/**")
                 .addResourceLocations("file://" + uploadPath + "/")
-                .addResourceLocations("file://" + uploadPathAvatar + "/");
+                .addResourceLocations("file://" + uploadPathAvatar + "/")
+                .addResourceLocations("file://" + uploadPathPost + "/");
     }
 }

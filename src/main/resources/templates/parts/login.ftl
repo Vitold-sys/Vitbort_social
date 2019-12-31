@@ -56,6 +56,20 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Name:</label>
+                <div class="col-sm-6">
+                    <input type="name" name="name" value="<#if user??>${user.name}</#if>"
+                           class="form-control" placeholder="Insert your name" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Surname:</label>
+                <div class="col-sm-6">
+                    <input type="surname" name="surname" value="<#if user??>${user.surname}</#if>"
+                           class="form-control" placeholder="Insert your surname" />
+                </div>
+            </div>
+            <div class="form-group row">
                 <div class="input-group">
                     <label class="col-sm-2 col-form-label">Gender:</label>
                     <div class="col-sm-6">
@@ -70,12 +84,12 @@
                 <label class="col-sm-2 col-form-label">Phone Number:</label>
                 <div class="col-sm-6">
                     <input type="phoneNumber" name="phoneNumber" value="<#if user??>${user.phoneNumber}</#if>"
-                           class="form-control placeholder=" +375000000000" />
+                           class="form-control" placeholder=" +375000000000" />
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Profile image:</label>
-                    <div class="form-group">
+                <div class="col-sm-6">
                         <div class="custom-file">
                             <input type="file" name="file" id="profileFile">
                             <label class="custom-file-label" for="profileFile">Browse image</label>
@@ -86,7 +100,7 @@
                 <label class="col-sm-2 col-form-label">User info:</label>
                 <div class="col-sm-6">
                     <input type="info" name="info" value="<#if user??>${user.info}</#if>"
-                           class="form-control placeholder="Tell something about you" />
+                           class="form-control" placeholder="Tell something about you" />
                 </div>
             </div>
             <div class="col-sm-6">

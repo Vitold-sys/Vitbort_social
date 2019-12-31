@@ -26,6 +26,9 @@ public class UserService implements UserDetailsService {
     @Value("${upload.path.avatar}")
     private String uploadPathAvatar;
 
+    @Value("${send.message.path1}")
+    private String uploadMessagePath;
+
     @Autowired
     private UserRepo userRepo;
 
@@ -63,7 +66,7 @@ public class UserService implements UserDetailsService {
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Vitbort. Please, visit next link: http://localhost:8080/activate/%s",
+                            "Welcome to Vitbort. Please, visit next link: " + uploadMessagePath + "%s",
                     user.getUsername(),
                     user.getActivationCode()
             );

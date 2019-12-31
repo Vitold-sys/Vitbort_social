@@ -31,6 +31,8 @@ public class User implements UserDetails {
     private String activationCode;
     private String filename;
     private String info;
+    private String name;
+    private String surname;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -195,6 +197,22 @@ public class User implements UserDetails {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     @Override

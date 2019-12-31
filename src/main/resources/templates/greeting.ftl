@@ -21,6 +21,8 @@
             <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
                 <div class="card-header">${user.username}</div>
                 <div class="card-body">
+                    <h5 class="card-title">${user.name}</h5>
+                    <h5 class="card-title">${user.surname}</h5>
                     <h5 class="card-title">${user.gender}</h5>
                     <h5 class="card-title">${user.phoneNumber}</h5>
                     <p class="card-text">${user.email}</p>
