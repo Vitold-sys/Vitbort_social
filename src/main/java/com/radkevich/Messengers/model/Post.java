@@ -9,12 +9,12 @@ import java.util.Set;
 
 @Entity
 public class Post {
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private Long id;
-        private String postname;
-        private String text;
-        private String tag;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String postname;
+    private String text;
+    private String tag;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -22,21 +22,21 @@ public class Post {
 
     private String filename;
 
-        @ManyToMany
-        @JoinTable(
-                name = "post_likes",
-                joinColumns = { @JoinColumn(name = "post_id") },
-                inverseJoinColumns = { @JoinColumn(name = "user_id")}
-        )
-        private Set<User> likes = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "post_likes",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
 
-        public Set<User> getLikes() {
-            return likes;
-        }
+    public Set<User> getLikes() {
+        return likes;
+    }
 
-        public void setLikes(Set<User> likes) {
-            this.likes = likes;
-        }
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
+    }
 
     public Long getId() {
         return id;
@@ -70,7 +70,11 @@ public class Post {
         this.tag = tag;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
+        return author;
+    }
+
+    public String getAuthorName() {
         return PostHelper.getAuthorName(author);
     }
 
@@ -86,15 +90,15 @@ public class Post {
         this.filename = filename;
     }
 
-    public Post(){
+    public Post() {
 
     }
 
-    public Post(String postname, String text, String tag, User author, Set<User> likes) {
+    public Post(String postname, String text, String tag, User user, Set<User> likes) {
         this.postname = postname;
         this.text = text;
         this.tag = tag;
-        this.author = author;
+        this.author = user;
         this.likes = likes;
     }
 }

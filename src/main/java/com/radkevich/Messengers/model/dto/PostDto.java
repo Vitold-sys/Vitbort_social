@@ -3,25 +3,24 @@ package com.radkevich.Messengers.model.dto;
 import com.radkevich.Messengers.model.Post;
 import com.radkevich.Messengers.model.User;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 public class PostDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String postname;
     private String text;
     private String tag;
     private User author;
     private String filename;
-    private Long Likes;
+    private Long likes;
     private Boolean meLiked;
 
     public PostDto(Post post, Long likes, Boolean meLiked) {
         this.id = post.getId();
-        Likes = likes;
+        this.postname = post.getPostname();
+        this.text = post.getText();
+        this.tag = post.getTag();
+        this.author = post.getAuthor();
+        this.filename = post.getFilename();
+        this.likes = likes;
         this.meLiked = meLiked;
     }
 
@@ -54,7 +53,7 @@ public class PostDto {
     }
 
     public Long getLikes() {
-        return Likes;
+        return likes;
     }
 
     public Boolean getMeLiked() {
@@ -66,7 +65,7 @@ public class PostDto {
         return "PostDto{" +
                 "id=" + id +
                 ", author=" + author +
-                ", Likes=" + Likes +
+                ", Likes=" + likes +
                 ", meLiked=" + meLiked +
                 '}';
     }

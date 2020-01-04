@@ -5,7 +5,7 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <form method="get" action="/posts" class="form-inline">
-                <select name="filter" autofocus class="form-control input-lg" id="tag">
+                <select name="filter" autofocus class="form-control input-lg" id="filter>
                     <option value="">Select please</option>
                     <option>Photo</option>
                     <option>News</option>
@@ -59,8 +59,7 @@
         </div>
     </div>
     <#list posts as post>
-        <div class="card text-white bg-primary mb-3">
-        <div class="card text-white bg-info mb-3">
+        <div class="card border-primary mb-3" style="max-width: 40rem;">
             <div class="card-header">${post.postname}</div>
             <div class="card-body">
                 <div class="m-2">
@@ -71,23 +70,23 @@
                 <p class="card-title">${post.text}</p>
                 <p class="card-text">Tag: ${post.tag}</p>
             </div>
-            <div class="card-footer">
-                <p class="card-text">Made by: ${post.author}</p>
-                <div>
-                   <#-- <a class="col align-self-center" href="/messages/${post.id}/like">
+            <div class="card-footer container">
+                <p class="card-text">Made by: <a href="/user-messages/${post.author.id}">${post.authorName}</a></p>
+                <div class="row" >
+                <a class="col align-self-center" href="/posts/${post.id}/like">
+                    <font color="red">
                         <#if post.meLiked>
                             <i class="fas fa-heart"></i>
                         <#else>
                             <i class="far fa-heart"></i>
                         </#if>
+                    </font>
                         ${post.likes}
-                    </a>-->
+                    </a>
                 </div>
             </div>
-        </div>
         </div>
     <#else>
         No posts
     </#list>
-
 </@c.page>

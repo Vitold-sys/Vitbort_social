@@ -5,6 +5,7 @@ import com.radkevich.Messengers.model.Comment;
 import com.radkevich.Messengers.model.Message;
 import com.radkevich.Messengers.model.Post;
 import com.radkevich.Messengers.model.User;
+import com.radkevich.Messengers.model.dto.PostDto;
 import com.radkevich.Messengers.repository.CommentRepo;
 import com.radkevich.Messengers.repository.PostRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +32,12 @@ public class PostService{
     @Autowired
     private PostRepo postRepo;
 
-    public Iterable<Post> filterPost(@RequestParam String filter) {
-        Iterable<Post> posts;
+    public Iterable<PostDto> filterPost(@RequestParam String filter, User user) {
+        Iterable<PostDto> posts;
         if (!filter.isEmpty()) {
-            posts = postRepo.findByTag(filter);
+            posts = postRepo.findByTag(filter, user);
         } else {
-            posts = postRepo.findAll();
+            posts = postRepo.findAll(user);
         }
         return posts;
     }
@@ -50,6 +52,10 @@ public class PostService{
             saveFile(post, file);
             postRepo.save(post);
         }
+    }
+
+    public Iterable<PostDto> postListForUser(User currentUser, User author) {
+        return postRepo.findByUser(author, currentUser);
     }
 
     private void saveFile(@Valid Post post, @RequestParam("file") MultipartFile file) throws IOException {

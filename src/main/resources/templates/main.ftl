@@ -52,7 +52,6 @@
         </div>
     </div>
 
-
     <#list messages as message>
         <div class="card my-3" style="width: 50rem;">
             <div class="m-2">

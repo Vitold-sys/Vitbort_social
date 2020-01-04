@@ -41,7 +41,7 @@
             <label class="col-sm-2 col-form-label">Phone Number:</label>
             <div class="col-sm-6">
                 <input type="phoneNumber" name="phoneNumber" value="<#if user??>${user.phoneNumber}</#if>"
-                       class="form-control placeholder=" +375000000000" />
+                       class="form-control" placeholder="+375000000000" />
             </div>
         </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
