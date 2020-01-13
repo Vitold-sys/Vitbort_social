@@ -25,9 +25,6 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private PostRepo postRepo;
-
     @GetMapping("/posts")
     public String post(@AuthenticationPrincipal User user, @RequestParam(required = false, defaultValue = "") String filter, Model model) {
         Iterable<PostDto> posts = postService.filterPost(filter, user);
@@ -38,7 +35,7 @@ public class PostController {
     @PostMapping("/posts")
     public String addPost(@AuthenticationPrincipal User user, @Valid Post post, @RequestParam("file") MultipartFile file, BindingResult bindingResult, Model model) throws IOException {
         postService.checkPost(user, post, file, bindingResult, model);
-        Iterable<Post> posts = postRepo.findAll();
+        Iterable<Post> posts = postService.findAll();
         model.addAttribute("posts", posts);
         return "postList";
     }

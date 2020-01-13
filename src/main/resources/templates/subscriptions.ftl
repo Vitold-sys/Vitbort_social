@@ -2,13 +2,30 @@
 <#include "parts/security.ftl">
 
 <@c.page>
-    <h3>${userChannel.username}</h3>
-    <div>${type}</div>
-    <ul class="list-group">
+
+    <div class="alert alert-success" role="alert">
+        ${userChannel.username}
+    </div>
+    <div class="alert alert-warning" role="alert">
+        ${type}
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Username</th>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+        </tr>
+        </thead>
+        <tbody>
         <#list users as user>
-            <li class="list-group-item">
-                <a href="/user-messages/${user.id}">${user.getUsername()}</a>
-            </li>
+            <tr>
+                <td class="table-info"><a href="/user-messages/${user.id}">${user.getUsername()}</a></td>
+                <td class="table-info">${user.getName()}</td>
+                <td class="table-info">${user.getSurname()}</td>
+            </tr>
         </#list>
-    </ul>
+        </tbody>
+    </table>
+
 </@c.page>

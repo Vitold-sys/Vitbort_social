@@ -2,6 +2,7 @@ package com.radkevich.Messengers.service;
 
 import com.radkevich.Messengers.controller.ControllerUtils;
 import com.radkevich.Messengers.model.Comment;
+import com.radkevich.Messengers.model.Message;
 import com.radkevich.Messengers.model.User;
 import com.radkevich.Messengers.repository.CommentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,13 @@ import java.util.Map;
 public class CommentService {
     @Autowired
     private CommentRepo commentRepo;
+
+
+    public Iterable<Comment> findAll() {
+        Iterable<Comment> comments;
+        comments = commentRepo.findAll();
+        return comments;
+    }
 
     public Iterable<Comment> filterComment(@RequestParam String filter) {
         Iterable<Comment> comments;

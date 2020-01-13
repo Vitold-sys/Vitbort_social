@@ -4,6 +4,7 @@ import com.radkevich.Messengers.controller.ControllerUtils;
 import com.radkevich.Messengers.model.Message;
 import com.radkevich.Messengers.model.User;
 import com.radkevich.Messengers.repository.MessageRepo;
+import com.radkevich.Messengers.service.util.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,12 +24,18 @@ import java.util.UUID;
 
 
 @Service
-public class MessageService {
+public class MessageService extends FileSaver {
     @Value("${upload.path}")
     private String uploadPath;
 
     @Autowired
     private MessageRepo messageRepo;
+
+    public Iterable<Message> findAll() {
+        Iterable<Message> messages;
+        messages = messageRepo.findAll();
+        return messages;
+    }
 
     public Iterable<Message> filterMessage(@RequestParam String filter) {
         Iterable<Message> messages;
@@ -54,19 +61,6 @@ public class MessageService {
         }
     }
 
-    private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-            message.setFilename(resultFilename);
-        }
-    }
-
     public void updateMessage(
             @AuthenticationPrincipal User currentUser,
             @PathVariable Long user,
@@ -84,6 +78,19 @@ public class MessageService {
             }
             saveFile(message, file);
             messageRepo.save(message);
+        }
+    }
+
+    public void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            file.transferTo(new File(uploadPath + "/" + resultFilename));
+            message.setFilename(resultFilename);
         }
     }
 }

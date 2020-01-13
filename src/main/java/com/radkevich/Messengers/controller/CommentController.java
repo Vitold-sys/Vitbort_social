@@ -22,9 +22,6 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @Autowired
-    private CommentRepo commentRepo;
-
     @GetMapping("/comment")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
         Iterable<Comment> comments = commentService.filterComment(filter);
@@ -35,7 +32,7 @@ public class CommentController {
     @PostMapping("/comment")
     public String addComment(@AuthenticationPrincipal User user, @Valid Comment comment, BindingResult bindingResult, Model model) {
         commentService.checkComment(user, comment, bindingResult, model);
-        Iterable<Comment> comments = commentRepo.findAll();
+        Iterable<Comment> comments = commentService.findAll();
         model.addAttribute("comments", comments);
         return "comment";
     }

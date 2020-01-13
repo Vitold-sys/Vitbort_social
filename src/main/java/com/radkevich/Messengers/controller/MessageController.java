@@ -2,7 +2,6 @@ package com.radkevich.Messengers.controller;
 
 import com.radkevich.Messengers.model.Message;
 import com.radkevich.Messengers.model.User;
-import com.radkevich.Messengers.repository.MessageRepo;
 import com.radkevich.Messengers.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,19 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 
 @Controller
 public class MessageController {
     @Autowired
-    private MessageRepo messageRepo;
-
-    @Autowired
     private MessageService messageService;
 
     @GetMapping("/")
-    public String greeting(Map model) {
+    public String greeting(Model model) {
         return "greeting";
     }
 
@@ -43,7 +38,7 @@ public class MessageController {
     @PostMapping("/main")
     public String add(@AuthenticationPrincipal User user, @Valid Message message, @RequestParam("file") MultipartFile file, BindingResult bindingResult, Model model) throws IOException {
         messageService.checkMessage(user, message, file, bindingResult, model);
-        Iterable<Message> messages = messageRepo.findAll();
+        Iterable<Message> messages = messageService.findAll();
         model.addAttribute("messages", messages);
         return "main";
     }

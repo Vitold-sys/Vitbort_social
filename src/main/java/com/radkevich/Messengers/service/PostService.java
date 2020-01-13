@@ -1,13 +1,11 @@
 package com.radkevich.Messengers.service;
 
 import com.radkevich.Messengers.controller.ControllerUtils;
-import com.radkevich.Messengers.model.Comment;
-import com.radkevich.Messengers.model.Message;
 import com.radkevich.Messengers.model.Post;
 import com.radkevich.Messengers.model.User;
 import com.radkevich.Messengers.model.dto.PostDto;
-import com.radkevich.Messengers.repository.CommentRepo;
 import com.radkevich.Messengers.repository.PostRepo;
+import com.radkevich.Messengers.service.util.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +22,18 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class PostService{
+public class PostService extends FileSaver{
     @Value("${upload.path.posts}")
     private String uploadPathPost;
 
     @Autowired
     private PostRepo postRepo;
+
+    public Iterable<Post> findAll() {
+        Iterable<Post> posts;
+        posts = postRepo.findAll();
+        return posts;
+    }
 
     public Iterable<PostDto> filterPost(@RequestParam String filter, User user) {
         Iterable<PostDto> posts;
@@ -70,6 +73,5 @@ public class PostService{
             post.setFilename(resultFilename);
         }
     }
-
 }
 

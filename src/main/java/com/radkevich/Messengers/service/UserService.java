@@ -4,6 +4,7 @@ import com.radkevich.Messengers.model.Role;
 import com.radkevich.Messengers.repository.UserRepo;
 import com.radkevich.Messengers.model.User;
 
+import com.radkevich.Messengers.service.util.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService extends FileSaver  implements UserDetailsService {
     @Value("${upload.path.avatar}")
     private String uploadPathAvatar;
 
