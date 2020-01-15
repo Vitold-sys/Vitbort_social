@@ -2,7 +2,9 @@ package com.radkevich.Messengers.model.dto;
 
 import com.radkevich.Messengers.model.Post;
 import com.radkevich.Messengers.model.User;
+import lombok.Getter;
 
+@Getter
 public class PostDto {
     private Long id;
     private String postname;
@@ -26,38 +28,6 @@ public class PostDto {
 
     public String getAuthorName() {
         return PostHelper.getAuthorName(author);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getPostname() {
-        return postname;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public Long getLikes() {
-        return likes;
-    }
-
-    public Boolean getMeLiked() {
-        return meLiked;
     }
 
     @Override

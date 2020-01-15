@@ -3,8 +3,8 @@ package com.radkevich.Messengers.controller;
 import com.radkevich.Messengers.model.Post;
 import com.radkevich.Messengers.model.User;
 import com.radkevich.Messengers.model.dto.PostDto;
-import com.radkevich.Messengers.repository.PostRepo;
 import com.radkevich.Messengers.service.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Set;
 
 @Controller
+@Slf4j
 public class PostController {
     @Autowired
     private PostService postService;
@@ -37,6 +38,9 @@ public class PostController {
         postService.checkPost(user, post, file, bindingResult, model);
         Iterable<Post> posts = postService.findAll();
         model.addAttribute("posts", posts);
+
+        posts.forEach(pst -> log.debug("Have some posts: {}", pst.toString()));
+
         return "postList";
     }
 

@@ -3,7 +3,6 @@ package com.radkevich.Messengers.controller;
 
 import com.radkevich.Messengers.model.Comment;
 import com.radkevich.Messengers.model.User;
-import com.radkevich.Messengers.repository.CommentRepo;
 import com.radkevich.Messengers.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @Controller
 public class CommentController {
