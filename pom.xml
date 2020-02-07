@@ -16,7 +16,8 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-	</properties>
+			<jsonwebtoken.version>0.8.0</jsonwebtoken.version>
+		</properties>
 
 	<dependencies>
 		<dependency>
@@ -51,8 +52,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		<!-- security -->
 
+		<!-- security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- JSON Web Token lib -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${jsonwebtoken.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
