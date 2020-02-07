@@ -1,7 +1,6 @@
 package com.radkevich.Messenger.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 
@@ -11,8 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table
 @Data
-@JsonIgnoreProperties({"filename"})
-public class Message {
+public class Comment {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @JsonView(Views.IdName.class)
@@ -28,7 +26,5 @@ public class Message {
 
     @JsonView(Views.IdName.class)
     private String tag;
-
-    private String filename;
-
 }
+

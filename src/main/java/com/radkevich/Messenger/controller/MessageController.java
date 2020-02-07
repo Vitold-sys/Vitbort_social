@@ -1,66 +1,57 @@
 package com.radkevich.Messenger.controller;
 
 
-
-import com.radkevich.Messenger.exceptions.NotFoundException;
-import org.aspectj.apache.bcel.classfile.Unknown;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.radkevich.Messenger.model.Message;
+import com.radkevich.Messenger.model.Views;
+import com.radkevich.Messenger.service.MessageService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("message")
+@RequestMapping("messages")
 public class MessageController {
 
-    private int counter = 4;
+    private final MessageService messageService;
 
-    private List<Map<String, String>> messages = new ArrayList<Map<String, String>>() {{
-        add(new HashMap<String, String>() {{ put("id", "1"); put("text", "First message"); }});
-        add(new HashMap<String, String>() {{ put("id", "2"); put("text", "Second message"); }});
-        add(new HashMap<String, String>() {{ put("id", "3"); put("text", "Third message"); }});
-    }};
+    @Autowired
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @GetMapping
-    public List<Map<String, String>> list() {
-        return messages;
+    @JsonView(Views.IdName.class)
+    public Iterable<Message> list() {
+        return messageService.findAll();
     }
 
     @GetMapping("{id}")
-    public Map<String, String> getOne(@PathVariable String id) {
-        return getMessage(id);
-    }
-
-    private Map<String, String> getMessage(@PathVariable String id) {
-        return messages.stream()
-                .filter(message -> message.get("id").equals(id))
-                .findFirst()
-                .orElseThrow(NotFoundException::new);
-    }
-
-    @PostMapping
-    public Map<String, String> create(@RequestBody Map<String, String> message) {
-        message.put("id", String.valueOf(counter++));
-        messages.add(message);
+    @JsonView(Views.Full.class)
+    public Message getOne(@PathVariable("id") Message message) {
         return message;
     }
 
+    @PostMapping
+    public Message create(@RequestBody Message message) {
+        message.setCreationDate(LocalDateTime.now());
+        return messageService.save(message);
+    }
+
     @PutMapping("{id}")
-    public Map<String, String> update(@PathVariable String id, @RequestBody Map<String, String> message) {
-        Map<String, String> messageFromDb = getMessage(id);
-        messageFromDb.putAll(message);
-        messageFromDb.put("id", id);
-        return messageFromDb;
+    public Message update(@PathVariable("id") Message messageFromDb, @RequestBody Message message) {
+        BeanUtils.copyProperties(message, messageFromDb, "id");
+        messageFromDb.setCreationDate(LocalDateTime.now());
+        return messageService.save(messageFromDb);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Unknown> delete(@PathVariable String id) {
-        Map<String, String> message = getMessage(id);
-        messages.remove(message);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> delete(@PathVariable("id") Message message) {
+        messageService.delete(message);
+        return new ResponseEntity<>("Message has been deleted", HttpStatus.OK);
     }
 }

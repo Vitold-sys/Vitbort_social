@@ -9,17 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -59,5 +54,14 @@ public class MessageService extends FileSaver {
             file.transferTo(new File(uploadPath + "/" + resultFilename));
             message.setFilename(resultFilename);
         }
+    }
+
+    public Message save(Message message) {
+        messageRepo.save(message);
+        return message;
+    }
+
+    public void delete(Message message) {
+        messageRepo.delete(message);
     }
 }
