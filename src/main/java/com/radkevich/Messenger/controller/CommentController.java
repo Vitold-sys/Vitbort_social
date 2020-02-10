@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("comments")
-@PreAuthorize(value="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class CommentController {
     private final CommentService commentService;
 

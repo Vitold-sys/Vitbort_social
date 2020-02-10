@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("messages")
-//@PreAuthorize(value="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-//@PreAuthorize(value="hasRole('ADMIN') or hasRole('USER')")
 @PreAuthorize("hasAuthority('ADMIN')")
 public class MessageController {
 

@@ -15,6 +15,7 @@ public class AdminUserDto {
     private String lastName;
     private String email;
     private String status;
+    private String gender;
 
     public User toUser() {
         User user = new User();
@@ -35,6 +36,7 @@ public class AdminUserDto {
         adminUserDto.setLastName(user.getLastName());
         adminUserDto.setEmail(user.getEmail());
         adminUserDto.setStatus(user.getStatus().name());
+        adminUserDto.setGender(user.getGender());
         return adminUserDto;
     }
 }

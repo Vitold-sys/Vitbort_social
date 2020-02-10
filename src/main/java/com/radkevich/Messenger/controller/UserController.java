@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
-@RequestMapping(value = "/users/")
+/*@RestController
+
 public class UserController {
     private final UserService userService;
 
@@ -34,4 +34,4 @@ public class UserController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-}
+}*/

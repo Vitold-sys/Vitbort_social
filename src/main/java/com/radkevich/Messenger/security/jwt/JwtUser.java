@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
@@ -16,7 +17,6 @@ public class JwtUser implements UserDetails {
     private final String password;
     private final String email;
     private final boolean enabled;
-    private final Date lastPasswordResetDate;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public JwtUser(
@@ -26,8 +26,7 @@ public class JwtUser implements UserDetails {
             String lastName,
             String email,
             String password, Collection<? extends GrantedAuthority> authorities,
-            boolean enabled,
-            Date lastPasswordResetDate
+            boolean enabled
     ) {
         this.id = id;
         this.username = username;
@@ -37,7 +36,6 @@ public class JwtUser implements UserDetails {
         this.password = password;
         this.authorities = authorities;
         this.enabled = enabled;
-        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     @JsonIgnore
@@ -94,10 +92,5 @@ public class JwtUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    @JsonIgnore
-    public Date getLastPasswordResetDate() {
-        return lastPasswordResetDate;
     }
 }

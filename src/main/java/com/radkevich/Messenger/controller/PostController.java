@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("posts")
+
 public class PostController {
 
     private final PostService postService;
@@ -38,14 +39,14 @@ public class PostController {
     }
 
     @PostMapping
-    @PreAuthorize(value="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Post create(@RequestBody Post post) {
         post.setCreationDate(LocalDateTime.now());
         return postService.save(post);
     }
 
     @PutMapping("{id}")
-    @PreAuthorize(value="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Post update(@PathVariable("id") Post postFromDb, @RequestBody Post post) {
         BeanUtils.copyProperties(post, postFromDb, "id");
         postFromDb.setCreationDate(LocalDateTime.now());
@@ -53,7 +54,7 @@ public class PostController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize(value="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable("id") Post post) {
         postService.delete(post);
         return new ResponseEntity<>("Post has been deleted", HttpStatus.OK);
