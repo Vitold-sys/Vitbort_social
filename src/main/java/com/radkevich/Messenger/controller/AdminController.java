@@ -1,7 +1,5 @@
 package com.radkevich.Messenger.controller;
 
-import com.radkevich.Messenger.model.Post;
-import com.radkevich.Messenger.model.Role;
 import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.model.dto.AdminUserDto;
 import com.radkevich.Messenger.service.UserService;
@@ -9,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -42,7 +43,7 @@ public class AdminController {
 
     @PutMapping("{id}")
     public ResponseEntity<String> userEditForm(@PathVariable(name = "id") User user) {
-        return  new ResponseEntity<>("User roles has been changed", HttpStatus.OK);
+        return new ResponseEntity<>("User roles has been changed", HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

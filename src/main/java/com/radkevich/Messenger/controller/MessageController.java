@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.MessageService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +44,9 @@ public class MessageController {
     }
 
     @PutMapping("{id}")
-    public Message update(@PathVariable("id") Message messageFromDb, @RequestBody Message message) {
-        BeanUtils.copyProperties(message, messageFromDb, "id");
-        messageFromDb.setCreationDate(LocalDateTime.now());
-        return messageService.save(messageFromDb);
+    public ResponseEntity<Message> update(@PathVariable("id") Message messageFromDb, @RequestBody Message message) {
+        messageService.update(messageFromDb, message);
+        return new ResponseEntity<>(messageFromDb, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

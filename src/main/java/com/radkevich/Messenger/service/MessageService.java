@@ -1,10 +1,11 @@
 package com.radkevich.Messenger.service;
 
 
-
+import com.radkevich.Messenger.exceptions.NotFoundException;
 import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.repository.MessageRepo;
 import com.radkevich.Messenger.service.util.FileSaver;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -63,6 +65,18 @@ public class MessageService extends FileSaver {
 
     public void delete(Message message) {
         messageRepo.delete(message);
+    }
+
+    public Message check(Long id) {
+        Message message = messageRepo.findById(id).orElseThrow(()-> new NotFoundException("No message"));
+        return message;
+    }
+
+    public Message update(Message messageFromDb, Message message) {
+        BeanUtils.copyProperties(message, messageFromDb, "id");
+        messageFromDb.setCreationDate(LocalDateTime.now());
+        messageRepo.save(messageFromDb);
+        return messageFromDb;
     }
 
 
