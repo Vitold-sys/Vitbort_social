@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("comments")
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('USER')")
 public class CommentController {
     private final CommentService commentService;
 
@@ -25,9 +25,8 @@ public class CommentController {
     }
 
     @GetMapping
-    @JsonView(Views.IdName.class)
-    public Iterable<Comment> list() {
-        return commentService.findAll();
+    public Iterable<Comment> main(@RequestParam(required = false, defaultValue = "") String filter) {
+        return commentService.filterComment(filter);
     }
 
     @GetMapping("{id}")
@@ -38,15 +37,13 @@ public class CommentController {
 
     @PostMapping
     public Comment create(@RequestBody Comment comment) {
-        comment.setCreationDate(LocalDateTime.now());
         return commentService.save(comment);
     }
 
     @PutMapping("{id}")
-    public Comment update(@PathVariable("id") Comment commentFromDb, @RequestBody Comment comment) {
-        BeanUtils.copyProperties(comment, commentFromDb, "id");
-        commentFromDb.setCreationDate(LocalDateTime.now());
-        return commentService.save(commentFromDb);
+    public ResponseEntity<Comment> update(@PathVariable("id") Comment commentFromDb, @RequestBody Comment comment) {
+        commentService.update(commentFromDb, comment);
+        return new ResponseEntity<>(commentFromDb, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

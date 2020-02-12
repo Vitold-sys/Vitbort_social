@@ -137,9 +137,11 @@ public class UserServiceImpl implements UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userRepository.findByUsername(name);
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUpdated(LocalDateTime.now());
-        return userRepository.save(user);
+        user.setActivationCode(UUID.randomUUID().toString());
+        userRepository.save(user);
+        sendMessage(user);
+        return user;
     }
 }

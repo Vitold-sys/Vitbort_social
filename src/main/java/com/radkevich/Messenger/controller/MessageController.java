@@ -3,19 +3,22 @@ package com.radkevich.Messenger.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.radkevich.Messenger.model.Message;
+import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
 @RestController
 @RequestMapping("messages")
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('USER')")
 public class MessageController {
 
     private final MessageService messageService;
@@ -26,9 +29,8 @@ public class MessageController {
     }
 
     @GetMapping
-    @JsonView(Views.IdName.class)
-    public Iterable<Message> list() {
-        return messageService.findAll();
+    public Iterable<Message> main(@RequestParam(required = false, defaultValue = "") String filter) {
+        return messageService.filterMessage(filter);
     }
 
     @GetMapping("{id}")
@@ -39,7 +41,6 @@ public class MessageController {
 
     @PostMapping
     public Message create(@RequestBody Message message) {
-        message.setCreationDate(LocalDateTime.now());
         return messageService.save(message);
     }
 
@@ -54,4 +55,10 @@ public class MessageController {
         messageService.delete(message);
         return new ResponseEntity<>("Message has been deleted", HttpStatus.OK);
     }
+
+    @GetMapping("/user-messages/")
+    public ResponseEntity<?> userMessages() {
+        return new ResponseEntity<>(messageService.userMessages(), HttpStatus.OK);
+    }
+
 }

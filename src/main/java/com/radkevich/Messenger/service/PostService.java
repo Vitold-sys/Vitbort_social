@@ -1,11 +1,15 @@
 package com.radkevich.Messenger.service;
 
 
+import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.Post;
 import com.radkevich.Messenger.repository.PostRepo;
 import com.radkevich.Messenger.service.util.FileSaver;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -54,10 +59,23 @@ public class PostService extends FileSaver {
     }
 
     public Post save(Post post) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        post.setAuthor(name);
+        post.setCreationDate(LocalDateTime.now());
         postRepo.save(post);
         return post;
     }
 
+    public Post update(Post postFromDb, Post post) {
+        BeanUtils.copyProperties(post, postFromDb, "id");
+        postFromDb.setCreationDate(LocalDateTime.now());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        postFromDb.setAuthor(name);
+        postRepo.save(postFromDb);
+        return postFromDb;
+    }
 
     public void delete(Post post) {
         postRepo.delete(post);

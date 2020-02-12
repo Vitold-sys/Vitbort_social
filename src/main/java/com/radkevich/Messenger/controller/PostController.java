@@ -5,18 +5,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.radkevich.Messenger.model.Post;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.PostService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequestMapping("posts")
-
 public class PostController {
 
     private final PostService postService;
@@ -27,9 +23,8 @@ public class PostController {
     }
 
     @GetMapping
-    @JsonView(Views.IdName.class)
-    public Iterable<Post> list() {
-        return postService.findAll();
+    public Iterable<Post> main(@RequestParam(required = false, defaultValue = "") String filter) {
+        return postService.filterPost(filter);
     }
 
     @GetMapping("{id}")
@@ -39,22 +34,19 @@ public class PostController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     public Post create(@RequestBody Post post) {
-        post.setCreationDate(LocalDateTime.now());
         return postService.save(post);
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     public Post update(@PathVariable("id") Post postFromDb, @RequestBody Post post) {
-        BeanUtils.copyProperties(post, postFromDb, "id");
-        postFromDb.setCreationDate(LocalDateTime.now());
         return postService.save(postFromDb);
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<String> delete(@PathVariable("id") Post post) {
         postService.delete(post);
         return new ResponseEntity<>("Post has been deleted", HttpStatus.OK);

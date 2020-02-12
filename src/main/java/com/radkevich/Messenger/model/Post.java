@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +31,8 @@ public class Post {
     @JsonView(Views.Full.class)
     private LocalDateTime creationDate;
 
+    @NotBlank(message = "Please fill the message")
+    @Length(max = 2048, message = "Message too long (more than 2kB)")
     @JsonView(Views.IdName.class)
     private String text;
 
@@ -38,5 +42,17 @@ public class Post {
     @JsonIgnore(value = false)
     private String filename;
 
+    private String author;
 
+    @ManyToMany
+    @JoinTable(
+            name = "post_likes",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
+
+    public Set<User> getLikes() {
+        return likes;
+    }
 }

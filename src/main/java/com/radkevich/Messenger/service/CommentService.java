@@ -2,9 +2,14 @@ package com.radkevich.Messenger.service;
 
 import com.radkevich.Messenger.model.Comment;
 import com.radkevich.Messenger.repository.CommentRepo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDateTime;
 
 @Service
 public class CommentService {
@@ -28,7 +33,21 @@ public class CommentService {
     }
 
     public Comment save(Comment comment) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        comment.setAuthor(name);
+        comment.setCreationDate(LocalDateTime.now());
         return commentRepo.save(comment);
+    }
+
+    public Comment update(Comment commentFromDb, Comment comment) {
+        BeanUtils.copyProperties(comment, commentFromDb, "id");
+        commentFromDb.setCreationDate(LocalDateTime.now());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        commentFromDb.setAuthor(name);
+        commentRepo.save(commentFromDb);
+        return commentFromDb;
     }
 
     public void delete(Comment comment) {

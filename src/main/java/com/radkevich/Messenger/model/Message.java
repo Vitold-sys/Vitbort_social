@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +25,8 @@ public class Message {
     @JsonView(Views.Full.class)
     private LocalDateTime creationDate;
 
+    @NotBlank(message = "Please fill the post text")
+    @Length(max = 2048, message = "Post too long (more than 2kB)")
     @JsonView(Views.IdName.class)
     private String text;
 
@@ -30,5 +34,7 @@ public class Message {
     private String tag;
 
     private String filename;
+
+    private String author;
 
 }
