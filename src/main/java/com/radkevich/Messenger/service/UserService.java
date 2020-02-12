@@ -23,4 +23,8 @@ public interface UserService {
 
     User updateProfile(User user);
 
+    public void subscribe(Long id);
+
+    public void unsubscribe(Long id);
+
 }

@@ -37,4 +37,8 @@ public class Message {
 
     private String author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User autUser;
+
 }

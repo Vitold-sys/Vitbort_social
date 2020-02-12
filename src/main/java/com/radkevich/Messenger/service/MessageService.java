@@ -93,11 +93,11 @@ public class MessageService extends FileSaver {
         return messageFromDb;
     }
 
-    public Set<Message> userMessages(){
+/*    public Set<Message> userMessages(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User userCurrent = userRepository.findByUsername(name);
         Set<Message> messages = userCurrent.getMessages();
         return messages;
-    }
+    }*/
 }

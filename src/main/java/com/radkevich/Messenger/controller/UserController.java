@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -31,6 +30,22 @@ public class UserController {
         }
         UserDto result = UserDto.fromUser(user);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("subscribe/{id}")
+    public ResponseEntity<String> subscribe(
+            @PathVariable long id
+    ) {
+        userService.subscribe(id);
+        return new ResponseEntity<String>("You have subscribe", HttpStatus.OK);
+    }
+
+    @GetMapping("unsubscribe/{id}")
+    public ResponseEntity<String> unsubscribe(
+            @PathVariable long id
+    ) {
+        userService.unsubscribe(id);
+        return new ResponseEntity<String>("You have unsubscribe", HttpStatus.OK);
     }
 
     @PutMapping("settings")

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -143,5 +144,23 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         sendMessage(user);
         return user;
+    }
+
+    public void subscribe(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepository.findByUsername(name);
+        User user = userRepository.findById(id).orElse(null);
+        user.getSubscribers().add(currentUser);
+        userRepository.save(user);
+    }
+
+    public void unsubscribe(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepository.findByUsername(name);
+        User user = userRepository.findById(id).orElse(null);
+        user.getSubscribers().remove(currentUser);
+        userRepository.save(user);
     }
 }

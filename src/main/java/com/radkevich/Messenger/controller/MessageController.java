@@ -56,9 +56,9 @@ public class MessageController {
         return new ResponseEntity<>("Message has been deleted", HttpStatus.OK);
     }
 
-    @GetMapping("/user-messages/")
+/*    @GetMapping("/user-messages/")
     public ResponseEntity<?> userMessages() {
         return new ResponseEntity<>(messageService.userMessages(), HttpStatus.OK);
-    }
+    }*/
 
 }
