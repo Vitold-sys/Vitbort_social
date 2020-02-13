@@ -10,6 +10,8 @@ import com.radkevich.Messenger.service.util.FileSaver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,12 +42,12 @@ public class MessageService extends FileSaver {
         return messages;
     }
 
-    public Iterable<Message> filterMessage(@RequestParam String filter) {
-        Iterable<Message> messages;
+    public Page<Message> filterMessage(@RequestParam String filter, Pageable pageable) {
+        Page<Message> messages;
         if (!filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
+            messages = messageRepo.findByTag(filter, pageable);
         } else {
-            messages = messageRepo.findAll();
+            messages = messageRepo.findAll(pageable);
         }
         return messages;
     }

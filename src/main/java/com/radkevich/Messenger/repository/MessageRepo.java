@@ -1,12 +1,15 @@
 package com.radkevich.Messenger.repository;
 
+
 import com.radkevich.Messenger.model.Message;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+public interface MessageRepo extends CrudRepository<Message, Long> {
 
-public interface MessageRepo extends JpaRepository<Message, Long> {
+    Page<Message> findAll(Pageable pageable);
 
-    List<Message> findByTag(String tag);
+    Page<Message> findByTag(String tag, Pageable pageable);
 
 }
