@@ -29,6 +29,7 @@ public class MessageController {
     }
 
     @GetMapping
+    @JsonView(Views.Full.class)
     public Iterable<Message> main(@RequestParam(required = false, defaultValue = "") String filter) {
         return messageService.filterMessage(filter);
     }
@@ -40,11 +41,13 @@ public class MessageController {
     }
 
     @PostMapping
+    @JsonView(Views.Full.class)
     public Message create(@RequestBody Message message) {
         return messageService.save(message);
     }
 
     @PutMapping("{id}")
+    @JsonView(Views.Full.class)
     public ResponseEntity<Message> update(@PathVariable("id") Message messageFromDb, @RequestBody Message message) {
         messageService.update(messageFromDb, message);
         return new ResponseEntity<>(messageFromDb, HttpStatus.OK);
@@ -56,9 +59,10 @@ public class MessageController {
         return new ResponseEntity<>("Message has been deleted", HttpStatus.OK);
     }
 
-/*    @GetMapping("/user-messages/")
+    @GetMapping("/user-messages/")
+    @JsonView(Views.IdName.class)
     public ResponseEntity<?> userMessages() {
         return new ResponseEntity<>(messageService.userMessages(), HttpStatus.OK);
-    }*/
+    }
 
 }

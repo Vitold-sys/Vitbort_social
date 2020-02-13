@@ -1,9 +1,10 @@
 package com.radkevich.Messenger.service;
 
 
-import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.Post;
+import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.repository.PostRepo;
+import com.radkevich.Messenger.repository.UserRepository;
 import com.radkevich.Messenger.service.util.FileSaver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,17 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class PostService extends FileSaver {
     @Value("${upload.path.posts}")
     private String uploadPathPost;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private PostRepo postRepo;
@@ -79,5 +85,21 @@ public class PostService extends FileSaver {
 
     public void delete(Post post) {
         postRepo.delete(post);
+    }
+
+
+
+    public Iterable<Post> Like(long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepository.findByUsername(name);
+        Post post = postRepo.findById(id).orElse(null);
+        Set<User> likes = post.getLikes();
+        if (likes.contains(currentUser)) {
+            likes.remove(currentUser);
+        } else {
+            likes.add(currentUser);
+        }
+        return Collections.singleton(post);
     }
 }

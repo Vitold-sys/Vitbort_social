@@ -51,4 +51,12 @@ public class PostController {
         postService.delete(post);
         return new ResponseEntity<>("Post has been deleted", HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/like")
+    @PreAuthorize("hasAuthority('USER')")
+    public Iterable<Post> like(
+            @PathVariable(name  = "id") long id
+    ) {
+        return postService.Like(id);
+    }
 }

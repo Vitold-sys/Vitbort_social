@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -17,6 +19,8 @@ import java.util.Set;
 @Entity
 @Table
 @Data
+@EqualsAndHashCode(exclude ={"likes"})
+@ToString(exclude ={"likes"})
 public class Post {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -50,8 +54,10 @@ public class Post {
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private Set<User> likes = new HashSet<>();
 
+    @JsonIgnore
+    private Set<User> likes = new HashSet<>();
+    @JsonIgnore
     public Set<User> getLikes() {
         return likes;
     }

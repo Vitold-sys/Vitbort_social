@@ -72,6 +72,7 @@ public class User {
     private String info;
 
     @OneToMany(mappedBy = "autUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Message> messages;
 
     @ManyToMany
@@ -80,6 +81,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "channel_id")},
             inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
     )
+    @JsonIgnore
     private Set<User> subscribers = new HashSet<>();
 
     @ManyToMany
@@ -88,6 +90,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "subscriber_id")},
             inverseJoinColumns = {@JoinColumn(name = "channel_id")}
     )
+    @JsonIgnore
     private Set<User> subscriptions = new HashSet<>();
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

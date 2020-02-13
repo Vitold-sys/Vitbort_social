@@ -1,6 +1,7 @@
 package com.radkevich.Messenger.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class Message {
 
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonView(Views.Full.class)
+    @JsonView(Views.IdName.class)
     private LocalDateTime creationDate;
 
     @NotBlank(message = "Please fill the post text")
@@ -33,12 +34,16 @@ public class Message {
     @JsonView(Views.IdName.class)
     private String tag;
 
+    @JsonView(Views.IdName.class)
     private String filename;
 
+
+    @JsonView(Views.Full.class)
     private String author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User autUser;
 
 }

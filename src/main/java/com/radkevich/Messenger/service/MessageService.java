@@ -52,7 +52,7 @@ public class MessageService extends FileSaver {
         return messages;
     }
 
-    public void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
+    public void saveFile(Message message, MultipartFile file) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
@@ -65,7 +65,7 @@ public class MessageService extends FileSaver {
         }
     }
 
-    public Message save(Message message) {
+    public Message save(Message message){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         message.setAuthor(name);
@@ -93,11 +93,11 @@ public class MessageService extends FileSaver {
         return messageFromDb;
     }
 
-/*    public Set<Message> userMessages(){
+    public Set<Message> userMessages(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User userCurrent = userRepository.findByUsername(name);
         Set<Message> messages = userCurrent.getMessages();
         return messages;
-    }*/
+    }
 }
