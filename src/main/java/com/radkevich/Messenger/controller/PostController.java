@@ -29,8 +29,8 @@ public class PostController {
 
     @GetMapping("{id}")
     @JsonView(Views.Full.class)
-    public Post getOne(@PathVariable("id") Post post) {
-        return post;
+    public Post getOne(@PathVariable("id") Long id) {
+        return postService.check(id);
     }
 
     @PostMapping
@@ -41,8 +41,8 @@ public class PostController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('USER')")
-    public Post update(@PathVariable("id") Post postFromDb, @RequestBody Post post) {
-        return postService.save(postFromDb);
+    public ResponseEntity<Post> update(@PathVariable("id") Long id, @RequestBody Post post) {
+        return new ResponseEntity<Post>(postService.update(id, post), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
@@ -55,7 +55,7 @@ public class PostController {
     @GetMapping("/{id}/like")
     @PreAuthorize("hasAuthority('USER')")
     public Iterable<Post> like(
-            @PathVariable(name  = "id") long id
+            @PathVariable(name = "id") long id
     ) {
         return postService.Like(id);
     }

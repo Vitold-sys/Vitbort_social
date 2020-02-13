@@ -1,6 +1,7 @@
 package com.radkevich.Messenger.service;
 
 
+import com.radkevich.Messenger.exceptions.NotFoundException;
 import com.radkevich.Messenger.model.Post;
 import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.repository.PostRepo;
@@ -73,7 +74,8 @@ public class PostService extends FileSaver {
         return post;
     }
 
-    public Post update(Post postFromDb, Post post) {
+    public Post update(Long id, Post post) {
+        Post postFromDb = postRepo.findById(id).orElseThrow(() -> new NotFoundException("No post with such id"));
         BeanUtils.copyProperties(post, postFromDb, "id");
         postFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -88,7 +90,6 @@ public class PostService extends FileSaver {
     }
 
 
-
     public Iterable<Post> Like(long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
@@ -101,5 +102,10 @@ public class PostService extends FileSaver {
             likes.add(currentUser);
         }
         return Collections.singleton(post);
+    }
+
+    public Post check(Long id) {
+        Post post = postRepo.findById(id).orElseThrow(() -> new NotFoundException("No post with such id"));
+        return post;
     }
 }

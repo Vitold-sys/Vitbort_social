@@ -36,8 +36,8 @@ public class MessageController {
 
     @GetMapping("{id}")
     @JsonView(Views.Full.class)
-    public Message getOne(@PathVariable("id") Message message) {
-        return message;
+    public Message getOne(@PathVariable("id") Long id) {
+        return messageService.check(id);
     }
 
     @PostMapping
@@ -48,9 +48,8 @@ public class MessageController {
 
     @PutMapping("{id}")
     @JsonView(Views.Full.class)
-    public ResponseEntity<Message> update(@PathVariable("id") Message messageFromDb, @RequestBody Message message) {
-        messageService.update(messageFromDb, message);
-        return new ResponseEntity<>(messageFromDb, HttpStatus.OK);
+    public ResponseEntity<Message> update(@PathVariable("id") Long id, @RequestBody Message message) {
+        return new ResponseEntity<>(messageService.update(id, message), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

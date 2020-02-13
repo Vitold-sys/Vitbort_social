@@ -31,8 +31,8 @@ public class CommentController {
 
     @GetMapping("{id}")
     @JsonView(Views.Full.class)
-    public Comment getOne(@PathVariable("id") Comment comment) {
-        return comment;
+    public Comment getOne(@PathVariable("id") Long id) {
+        return commentService.check(id);
     }
 
     @PostMapping
@@ -41,9 +41,8 @@ public class CommentController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Comment> update(@PathVariable("id") Comment commentFromDb, @RequestBody Comment comment) {
-        commentService.update(commentFromDb, comment);
-        return new ResponseEntity<>(commentFromDb, HttpStatus.OK);
+    public ResponseEntity<Comment> update(@PathVariable("id") Long id, @RequestBody Comment comment) {
+        return new ResponseEntity<>(commentService.update(id, comment), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

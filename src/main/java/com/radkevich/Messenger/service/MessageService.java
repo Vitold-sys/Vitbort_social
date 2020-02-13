@@ -79,11 +79,12 @@ public class MessageService extends FileSaver {
     }
 
     public Message check(Long id) {
-        Message message = messageRepo.findById(id).orElseThrow(()-> new NotFoundException("No message"));
+        Message message = messageRepo.findById(id).orElseThrow(()-> new NotFoundException("No message with such id"));
         return message;
     }
 
-    public Message update(Message messageFromDb, Message message) {
+    public Message update(Long id, Message message) {
+        Message messageFromDb = messageRepo.findById(id).orElseThrow(()-> new NotFoundException("No message with such id"));
         BeanUtils.copyProperties(message, messageFromDb, "id");
         messageFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
