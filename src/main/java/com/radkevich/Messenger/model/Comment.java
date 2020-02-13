@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public class Comment {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.IdName.class)
     private Long id;
 

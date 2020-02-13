@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties({"filename"})
 public class Message {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.IdName.class)
     private Long id;
 

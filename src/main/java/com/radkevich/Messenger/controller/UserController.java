@@ -18,14 +18,14 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController (UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id){
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
         User user = userService.findById(id);
-        if(user == null){
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         UserDto result = UserDto.fromUser(user);
@@ -50,8 +50,8 @@ public class UserController {
 
     @PutMapping("settings")
     public ResponseEntity<?> updateProfile(@RequestBody User userUpdate) throws IOException {
-        if(userUpdate.getGender() == null || userUpdate.getPassword() == null || userUpdate.getFirstName() == null
-        || userUpdate.getLastName() == null || userUpdate.getEmail() == null){
+        if (userUpdate.getGender() == null || userUpdate.getPassword() == null || userUpdate.getFirstName() == null
+                || userUpdate.getLastName() == null || userUpdate.getEmail() == null) {
             return new ResponseEntity<>("Please insert all fields", HttpStatus.BAD_REQUEST);
         }
         userService.updateProfile(userUpdate);

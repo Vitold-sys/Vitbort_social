@@ -19,11 +19,11 @@ import java.util.Set;
 @Entity
 @Table
 @Data
-@EqualsAndHashCode(exclude ={"likes"})
-@ToString(exclude ={"likes"})
+@EqualsAndHashCode(exclude = {"likes"})
+@ToString(exclude = {"likes"})
 public class Post {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.IdName.class)
     private Long id;
 
@@ -57,6 +57,7 @@ public class Post {
 
     @JsonIgnore
     private Set<User> likes = new HashSet<>();
+
     @JsonIgnore
     public Set<User> getLikes() {
         return likes;

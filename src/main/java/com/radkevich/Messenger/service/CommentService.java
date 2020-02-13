@@ -2,7 +2,6 @@ package com.radkevich.Messenger.service;
 
 import com.radkevich.Messenger.exceptions.NotFoundException;
 import com.radkevich.Messenger.model.Comment;
-import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.repository.CommentRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class CommentService {
     }
 
     public Comment update(Long id, Comment comment) {
-        Comment commentFromDb = commentRepo.findById(id).orElseThrow(()-> new NotFoundException("No comment with such id"));
+        Comment commentFromDb = commentRepo.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
         BeanUtils.copyProperties(comment, commentFromDb, "id");
         commentFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -59,7 +58,7 @@ public class CommentService {
 
 
     public Comment check(Long id) {
-        Comment comment = commentRepo.findById(id).orElseThrow(()-> new NotFoundException("No comment with such id"));
+        Comment comment = commentRepo.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
         return comment;
     }
 

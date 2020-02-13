@@ -14,7 +14,7 @@ public class UserDto {
     private String lastName;
     private String email;
 
-    public User toUser(){
+    public User toUser() {
         User user = new User();
         user.setId(id);
         user.setUsername(username);

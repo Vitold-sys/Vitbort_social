@@ -10,14 +10,12 @@ import com.radkevich.Messenger.service.util.FileSaver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -65,7 +63,7 @@ public class MessageService extends FileSaver {
         }
     }
 
-    public Message save(Message message){
+    public Message save(Message message) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         message.setAuthor(name);
@@ -79,12 +77,12 @@ public class MessageService extends FileSaver {
     }
 
     public Message check(Long id) {
-        Message message = messageRepo.findById(id).orElseThrow(()-> new NotFoundException("No message with such id"));
+        Message message = messageRepo.findById(id).orElseThrow(() -> new NotFoundException("No message with such id"));
         return message;
     }
 
     public Message update(Long id, Message message) {
-        Message messageFromDb = messageRepo.findById(id).orElseThrow(()-> new NotFoundException("No message with such id"));
+        Message messageFromDb = messageRepo.findById(id).orElseThrow(() -> new NotFoundException("No message with such id"));
         BeanUtils.copyProperties(message, messageFromDb, "id");
         messageFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -94,7 +92,7 @@ public class MessageService extends FileSaver {
         return messageFromDb;
     }
 
-    public Set<Message> userMessages(){
+    public Set<Message> userMessages() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User userCurrent = userRepository.findByUsername(name);

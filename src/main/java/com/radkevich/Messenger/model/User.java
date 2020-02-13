@@ -19,8 +19,8 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
-@EqualsAndHashCode(exclude ={"messages", "subscribers", "subscriptions"})
-@ToString(exclude ={"messages", "subscribers", "subscriptions"})
+@EqualsAndHashCode(exclude = {"messages", "subscribers", "subscriptions"})
+@ToString(exclude = {"messages", "subscribers", "subscriptions"})
 public class User {
 
     @Id
