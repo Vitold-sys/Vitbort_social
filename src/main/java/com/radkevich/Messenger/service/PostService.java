@@ -10,6 +10,8 @@ import com.radkevich.Messenger.service.util.FileSaver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,16 +44,15 @@ public class PostService extends FileSaver {
         return posts;
     }
 
-    public Iterable<Post> filterPost(@RequestParam String filter) {
-        Iterable<Post> posts;
+    public Page<Post> filterPost(@RequestParam String filter, Pageable pageable) {
+        Page<Post> posts;
         if (!filter.isEmpty()) {
-            posts = postRepo.findByTag(filter);
+            posts = postRepo.findByTag(filter, pageable);
         } else {
-            posts = postRepo.findAll();
+            posts = postRepo.findAll(pageable);
         }
         return posts;
     }
-
 
     private void saveFile(@Valid Post post, @RequestParam("file") MultipartFile file) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {

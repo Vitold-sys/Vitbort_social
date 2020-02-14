@@ -6,10 +6,16 @@ import com.radkevich.Messenger.model.Post;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("posts")
@@ -23,8 +29,10 @@ public class PostController {
     }
 
     @GetMapping
-    public Iterable<Post> main(@RequestParam(required = false, defaultValue = "") String filter) {
-        return postService.filterPost(filter);
+    public ResponseEntity<List<Post>> main(@RequestParam(required = false, defaultValue = "") String filter,
+                                           @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Post> posts = postService.filterPost(filter,pageable);
+        return ResponseEntity.ok(posts.getContent());
     }
 
     @GetMapping("{id}")

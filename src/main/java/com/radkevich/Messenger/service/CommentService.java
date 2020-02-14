@@ -5,6 +5,8 @@ import com.radkevich.Messenger.model.Comment;
 import com.radkevich.Messenger.repository.CommentRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,12 +25,12 @@ public class CommentService {
         return comments;
     }
 
-    public Iterable<Comment> filterComment(@RequestParam String filter) {
-        Iterable<Comment> comments;
+    public Page<Comment> filterComment(@RequestParam String filter, Pageable pageable) {
+        Page<Comment> comments;
         if (!filter.isEmpty()) {
-            comments = commentRepo.findByTag(filter);
+            comments = commentRepo.findByTag(filter, pageable);
         } else {
-            comments = commentRepo.findAll();
+            comments = commentRepo.findAll(pageable);
         }
         return comments;
     }

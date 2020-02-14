@@ -2,16 +2,20 @@ package com.radkevich.Messenger.service;
 
 
 import com.radkevich.Messenger.exceptions.NotFoundException;
+import com.radkevich.Messenger.filter.CustomRsqlVisitor;
 import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.repository.MessageRepo;
 import com.radkevich.Messenger.repository.UserRepository;
 import com.radkevich.Messenger.service.util.FileSaver;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,7 +50,9 @@ public class MessageService extends FileSaver {
     public Page<Message> filterMessage(@RequestParam String filter, Pageable pageable) {
         Page<Message> messages;
         if (!filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter, pageable);
+            Node rootNode = new RSQLParser().parse(filter);
+            Specification<Message> spec = rootNode.accept(new CustomRsqlVisitor<Message>());
+            messages =  messageRepo.findAll(spec, pageable);
         } else {
             messages = messageRepo.findAll(pageable);
         }

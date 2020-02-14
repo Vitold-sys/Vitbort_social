@@ -5,10 +5,16 @@ import com.radkevich.Messenger.model.Comment;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("comments")
@@ -22,8 +28,10 @@ public class CommentController {
     }
 
     @GetMapping
-    public Iterable<Comment> main(@RequestParam(required = false, defaultValue = "") String filter) {
-        return commentService.filterComment(filter);
+    public ResponseEntity<List<Comment>> main(@RequestParam(required = false, defaultValue = "") String filter,
+                                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Comment> comments = commentService.filterComment(filter,pageable);
+        return ResponseEntity.ok(comments.getContent());
     }
 
     @GetMapping("{id}")
