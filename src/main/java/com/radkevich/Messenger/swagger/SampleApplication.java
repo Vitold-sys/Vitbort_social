@@ -1,5 +1,6 @@
 package com.radkevich.Messenger.swagger;
 
+/*
 import io.swagger.jaxrs.config.BeanConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -13,7 +14,7 @@ public class SampleApplication extends Application {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion("1.0.0");
         beanConfig.setBasePath("/api");
-        beanConfig.setResourcePackage("com.radkevich");
+        beanConfig.setResourcePackage("com.radkevich.Messenger");
         beanConfig.setScan(true);
     }
     @Override
@@ -23,4 +24,4 @@ public class SampleApplication extends Application {
         resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
         return resources;
     }
-}
+}*/

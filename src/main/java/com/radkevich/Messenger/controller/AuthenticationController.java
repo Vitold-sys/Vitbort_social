@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-
+@CrossOrigin(origins = "http://localhost:8090")
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 

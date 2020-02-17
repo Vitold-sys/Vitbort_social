@@ -3,6 +3,7 @@ package com.radkevich.Messenger.controller;
 import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.model.dto.UserDto;
 import com.radkevich.Messenger.service.UserService;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.io.IOException;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8090")
 @PreAuthorize("hasAuthority('USER')")
 public class UserController {
     private final UserService userService;
@@ -22,8 +24,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
+    @GetMapping("/me/{id}")
+    public ResponseEntity<UserDto> getUserById(@ApiParam(value = "ID of user to return", required = true)
+                                               @PathVariable(name = "id") Long id) {
         User user = userService.findById(id);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -33,16 +36,16 @@ public class UserController {
     }
 
     @GetMapping("subscribe/{id}")
-    public ResponseEntity<String> subscribe(
-            @PathVariable long id
+    public ResponseEntity<String> subscribe(@ApiParam(value = "ID of user to return", required = true)
+                                            @PathVariable long id
     ) {
         userService.subscribe(id);
         return new ResponseEntity<String>("You have subscribe", HttpStatus.OK);
     }
 
     @GetMapping("unsubscribe/{id}")
-    public ResponseEntity<String> unsubscribe(
-            @PathVariable long id
+    public ResponseEntity<String> unsubscribe(@ApiParam(value = "ID of user to return", required = true)
+                                              @PathVariable long id
     ) {
         userService.unsubscribe(id);
         return new ResponseEntity<String>("You have unsubscribe", HttpStatus.OK);

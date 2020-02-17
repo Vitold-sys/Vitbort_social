@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.MessageService;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8090")
 @RequestMapping("messages")
 @PreAuthorize("hasAuthority('USER')")
 public class MessageController {
@@ -28,16 +30,16 @@ public class MessageController {
     }
 
     @GetMapping
-
     public ResponseEntity<Iterable<Message>> main(@RequestParam(required = false, defaultValue = "") String filter,
                                                   @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Message> messages = messageService.filterMessage(filter,pageable);
+        Page<Message> messages = messageService.filterMessage(filter, pageable);
         return ResponseEntity.ok(messages.getContent());
     }
 
     @GetMapping("{id}")
     @JsonView(Views.Full.class)
-    public Message getOne(@PathVariable("id") Long id) {
+    public Message getOne(@ApiParam(value = "ID of message to return", required = true)
+                          @PathVariable("id") Long id) {
         return messageService.check(id);
     }
 
@@ -49,12 +51,14 @@ public class MessageController {
 
     @PutMapping("{id}")
     @JsonView(Views.Full.class)
-    public ResponseEntity<Message> update(@PathVariable("id") Long id, @RequestBody Message message) {
+    public ResponseEntity<Message> update(@ApiParam(value = "ID of message to return", required = true)
+                                          @PathVariable("id") Long id, @RequestBody Message message) {
         return new ResponseEntity<>(messageService.update(id, message), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Message message) {
+    public ResponseEntity<String> delete(@ApiParam(value = "ID of message to return", required = true)
+                                         @PathVariable("id") Message message) {
         messageService.delete(message);
         return new ResponseEntity<>("Message has been deleted", HttpStatus.OK);
     }

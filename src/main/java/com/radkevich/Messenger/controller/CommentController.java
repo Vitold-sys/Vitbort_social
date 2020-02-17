@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.radkevich.Messenger.model.Comment;
 import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.CommentService;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8090")
 @RequestMapping("comments")
 @PreAuthorize("hasAuthority('USER')")
 public class CommentController {
@@ -30,13 +32,13 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<List<Comment>> main(@RequestParam(required = false, defaultValue = "") String filter,
                                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Comment> comments = commentService.filterComment(filter,pageable);
+        Page<Comment> comments = commentService.filterComment(filter, pageable);
         return ResponseEntity.ok(comments.getContent());
     }
 
     @GetMapping("{id}")
     @JsonView(Views.Full.class)
-    public Comment getOne(@PathVariable("id") Long id) {
+    public Comment getOne(@ApiParam(value = "ID of comment to return", required = true) @PathVariable("id") Long id) {
         return commentService.check(id);
     }
 
@@ -46,12 +48,14 @@ public class CommentController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Comment> update(@PathVariable("id") Long id, @RequestBody Comment comment) {
+    public ResponseEntity<Comment> update(@ApiParam(value = "ID of comment to return", required = true)
+                                          @PathVariable("id") Long id, @RequestBody Comment comment) {
         return new ResponseEntity<>(commentService.update(id, comment), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Comment comment) {
+    public ResponseEntity<String> delete(@ApiParam(value = "ID of comment to return", required = true)
+                                         @PathVariable("id") Comment comment) {
         commentService.delete(comment);
         return new ResponseEntity<>("Comment has been deleted", HttpStatus.OK);
     }

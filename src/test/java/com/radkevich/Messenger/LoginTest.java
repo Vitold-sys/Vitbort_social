@@ -43,6 +43,15 @@ public class LoginTest {
     @Autowired
     private MessageService messageService;
 
+
+    @Test
+    public void loginDeniedTest() throws Exception {
+        this.mockMvc.perform(get("/user"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+
     @Test
     public void accessDeniedTest() throws Exception {
         this.mockMvc.perform(get("/messages"))
