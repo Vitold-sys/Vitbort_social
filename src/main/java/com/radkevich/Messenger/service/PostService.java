@@ -66,17 +66,19 @@ public class PostService extends FileSaver {
         }
     }
 
-    public Post save(Post post) {
+    public Post save(Post post,  MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         post.setAuthor(name);
         post.setCreationDate(LocalDateTime.now());
+        saveFile(post, file);
         postRepo.save(post);
         return post;
     }
 
-    public Post update(Long id, Post post) {
+    public Post update(Long id, Post post, MultipartFile file) throws IOException {
         Post postFromDb = postRepo.findById(id).orElseThrow(() -> new NotFoundException("No post with such id"));
+        saveFile(post, file);
         BeanUtils.copyProperties(post, postFromDb, "id");
         postFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -65,6 +65,7 @@ public class User {
 
     @JsonIgnore
     private String activationCode;
+
     private String filename;
 
     @NotBlank(message = "Please check your info")

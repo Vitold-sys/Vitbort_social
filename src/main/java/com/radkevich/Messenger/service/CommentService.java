@@ -2,20 +2,29 @@ package com.radkevich.Messenger.service;
 
 import com.radkevich.Messenger.exceptions.NotFoundException;
 import com.radkevich.Messenger.model.Comment;
+import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.repository.CommentRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class CommentService {
+    @Value("${upload.path.comment}")
+    private String uploadPath;
+
     @Autowired
     private CommentRepo commentRepo;
 
@@ -35,16 +44,18 @@ public class CommentService {
         return comments;
     }
 
-    public Comment save(Comment comment) {
+    public Comment save(Comment comment,  MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         comment.setAuthor(name);
         comment.setCreationDate(LocalDateTime.now());
+        saveFile(comment, file);
         return commentRepo.save(comment);
     }
 
-    public Comment update(Long id, Comment comment) {
+    public Comment update(Long id, Comment comment,  MultipartFile file) throws IOException {
         Comment commentFromDb = commentRepo.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
+        saveFile(comment, file);
         BeanUtils.copyProperties(comment, commentFromDb, "id");
         commentFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -58,10 +69,22 @@ public class CommentService {
         commentRepo.delete(comment);
     }
 
-
     public Comment check(Long id) {
         Comment comment = commentRepo.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
         return comment;
+    }
+
+    public void saveFile(Comment comment, MultipartFile file) throws IOException {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            file.transferTo(new File(uploadPath + "/" + resultFilename));
+            comment.setFilename(resultFilename);
+        }
     }
 
 }

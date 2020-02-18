@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8090")
@@ -45,15 +48,18 @@ public class MessageController {
 
     @PostMapping
     @JsonView(Views.Full.class)
-    public Message create(@RequestBody Message message) {
-        return messageService.save(message);
+    public Message create(@RequestPart Message message,
+                          @RequestPart("file") MultipartFile file) throws IOException {
+        return messageService.save(message, file);
     }
 
     @PutMapping("{id}")
     @JsonView(Views.Full.class)
     public ResponseEntity<Message> update(@ApiParam(value = "ID of message to return", required = true)
-                                          @PathVariable("id") Long id, @RequestBody Message message) {
-        return new ResponseEntity<>(messageService.update(id, message), HttpStatus.OK);
+                                          @PathVariable("id") Long id,
+                                          @RequestPart Message message,
+                                          @RequestPart("file") MultipartFile file) throws IOException {
+        return new ResponseEntity<>(messageService.update(id, message, file), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

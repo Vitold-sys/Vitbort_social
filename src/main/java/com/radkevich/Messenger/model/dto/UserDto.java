@@ -13,6 +13,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String filename;
 
     public User toUser() {
         User user = new User();
@@ -21,6 +22,7 @@ public class UserDto {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
+        user.setFilename(filename);
 
         return user;
     }
@@ -32,6 +34,7 @@ public class UserDto {
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
+        userDto.setFilename(user.getFilename());
 
         return userDto;
     }

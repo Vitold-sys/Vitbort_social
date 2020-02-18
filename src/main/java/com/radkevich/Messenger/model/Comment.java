@@ -32,5 +32,7 @@ public class Comment {
     private String tag;
 
     private String author;
+
+    private String filename;
 }
 

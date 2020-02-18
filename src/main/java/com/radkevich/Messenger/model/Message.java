@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table
 @Data
-@JsonIgnoreProperties({"filename"})
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,9 +33,8 @@ public class Message {
     @JsonView(Views.IdName.class)
     private String tag;
 
-    @JsonView(Views.IdName.class)
+    @JsonView(Views.Full.class)
     private String filename;
-
 
     @JsonView(Views.Full.class)
     private String author;

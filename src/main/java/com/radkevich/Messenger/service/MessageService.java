@@ -71,11 +71,12 @@ public class MessageService extends FileSaver {
         }
     }
 
-    public Message save(Message message) {
+    public Message save(Message message,  MultipartFile file) throws IOException  {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         message.setAuthor(name);
         message.setCreationDate(LocalDateTime.now());
+        saveFile(message, file);
         messageRepo.save(message);
         return message;
     }
@@ -89,8 +90,9 @@ public class MessageService extends FileSaver {
         return message;
     }
 
-    public Message update(Long id, Message message) {
+    public Message update(Long id, Message message, MultipartFile file) throws IOException  {
         Message messageFromDb = messageRepo.findById(id).orElseThrow(() -> new NotFoundException("No message with such id"));
+        saveFile(message, file);
         BeanUtils.copyProperties(message, messageFromDb, "id");
         messageFromDb.setCreationDate(LocalDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

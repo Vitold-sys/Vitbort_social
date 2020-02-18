@@ -43,7 +43,6 @@ public class Post {
     @JsonView(Views.IdName.class)
     private String tag;
 
-    @JsonIgnore(value = false)
     private String filename;
 
     private String author;

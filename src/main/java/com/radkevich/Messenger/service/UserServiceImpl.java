@@ -48,13 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(User user) throws IOException {
+    public User register(User user, MultipartFile file) throws IOException {
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.ACTIVE);
         user.setCreated(LocalDateTime.now());
         user.setUpdated(LocalDateTime.now());
+        saveAvatar(user, file);
         User registeredUser = userRepository.save(user);
         sendMessage(user);
         log.info("IN register - user: {} successfully registered", registeredUser);
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void saveAvatar(@Valid User user, @RequestParam("file") MultipartFile file) throws IOException {
+    private void saveAvatar(@Valid User user, MultipartFile file) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPathAvatar);
             if (!uploadDir.exists()) {

@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -59,9 +60,8 @@ public class AuthenticationController {
 
     @PostMapping("/registration")
     public User addUser(
-            @RequestBody User user
-    ) throws IOException {
-        return userService.register(user);
+            @RequestPart User user, @RequestPart("file") MultipartFile file) throws IOException{
+        return userService.register(user, file);
     }
 
     @GetMapping("/activate/{code}")
@@ -72,6 +72,5 @@ public class AuthenticationController {
         } else {
             return new ResponseEntity<>("Profile is not activate", HttpStatus.NOT_ACCEPTABLE);
         }
-
     }
 }

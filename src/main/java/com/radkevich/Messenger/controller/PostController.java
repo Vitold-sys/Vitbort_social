@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,7 +40,6 @@ public class PostController {
     }
 
     @GetMapping("{id}")
-    @JsonView(Views.Full.class)
     public Post getOne(@ApiParam(value = "ID of post to return", required = true)
                        @PathVariable("id") Long id) {
         return postService.check(id);
@@ -46,15 +47,16 @@ public class PostController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
-    public Post create(@RequestBody Post post) {
-        return postService.save(post);
+    public Post create(@RequestPart Post post, @RequestPart("file") MultipartFile file) throws IOException {
+        return postService.save(post, file);
     }
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Post> update(@ApiParam(value = "ID of post to return", required = true)
-                                       @PathVariable("id") Long id, @RequestBody Post post) {
-        return new ResponseEntity<Post>(postService.update(id, post), HttpStatus.OK);
+                                       @PathVariable("id") Long id, @RequestPart Post post,
+                                       @RequestPart("file") MultipartFile file) throws IOException {
+        return new ResponseEntity<Post>(postService.update(id, post, file), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

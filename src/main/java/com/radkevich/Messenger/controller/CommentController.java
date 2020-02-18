@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -37,20 +39,20 @@ public class CommentController {
     }
 
     @GetMapping("{id}")
-    @JsonView(Views.Full.class)
     public Comment getOne(@ApiParam(value = "ID of comment to return", required = true) @PathVariable("id") Long id) {
         return commentService.check(id);
     }
 
     @PostMapping
-    public Comment create(@RequestBody Comment comment) {
-        return commentService.save(comment);
+    public Comment create(@RequestPart Comment comment, @RequestPart("file") MultipartFile file) throws IOException {
+        return commentService.save(comment, file);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Comment> update(@ApiParam(value = "ID of comment to return", required = true)
-                                          @PathVariable("id") Long id, @RequestBody Comment comment) {
-        return new ResponseEntity<>(commentService.update(id, comment), HttpStatus.OK);
+                                          @PathVariable("id") Long id, @RequestPart Comment comment,
+                                          @RequestPart("file") MultipartFile file) throws IOException {
+        return new ResponseEntity<>(commentService.update(id, comment, file), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
