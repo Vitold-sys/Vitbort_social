@@ -17,8 +17,6 @@ import javax.servlet.ServletContext;
 @EnableSwagger2WebMvc
 @Import(SpringDataRestConfiguration.class)
 public class SpringFoxConfig implements WebMvcConfigurer {
-    private static final String SWAGGER_UI_PATH = "/swagger/ui";
-
     @Bean
     public Docket api(ServletContext servletContext) {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -27,6 +25,4 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .paths(PathSelectors.any())
                 .build();
     }
-
-
 }

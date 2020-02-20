@@ -2,6 +2,7 @@ package com.radkevich.Messenger.service;
 
 
 import com.radkevich.Messenger.exceptions.NotFoundException;
+import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.Post;
 import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.repository.PostRepo;
@@ -10,6 +11,8 @@ import com.radkevich.Messenger.service.util.FileSaver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
@@ -30,6 +36,9 @@ import java.util.UUID;
 public class PostService extends FileSaver {
     @Value("${upload.path.posts}")
     private String uploadPathPost;
+
+    @Value("${url.path}")
+    private String urlPath;
 
     @Autowired
     private UserRepository userRepository;
@@ -66,14 +75,15 @@ public class PostService extends FileSaver {
         }
     }
 
-    public Post save(Post post,  MultipartFile file) throws IOException {
+    public Post save(Post post, MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         post.setAuthor(name);
         post.setCreationDate(LocalDateTime.now());
         saveFile(post, file);
         postRepo.save(post);
-        return post;
+        post.setFileDownloadUri(urlPath + "posts/downloadFile/" + post.getId() + "/" + post.getFilename());
+        return postRepo.save(post);
     }
 
     public Post update(Long id, Post post, MultipartFile file) throws IOException {
@@ -84,6 +94,7 @@ public class PostService extends FileSaver {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         postFromDb.setAuthor(name);
+        postFromDb.setFileDownloadUri(urlPath + "posts/downloadFile/" + postFromDb.getId() + "/" + postFromDb.getFilename());
         postRepo.save(postFromDb);
         return postFromDb;
     }
@@ -110,5 +121,13 @@ public class PostService extends FileSaver {
     public Post check(Long id) {
         Post post = postRepo.findById(id).orElseThrow(() -> new NotFoundException("No post with such id"));
         return post;
+    }
+
+    public Resource loadFileAsResource(Long id) throws MalformedURLException {
+        Post post = postRepo.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
+        Path filePath =  Paths.get(uploadPathPost + "/" + post.getFilename())
+                .toAbsolutePath().normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+        return resource;
     }
 }

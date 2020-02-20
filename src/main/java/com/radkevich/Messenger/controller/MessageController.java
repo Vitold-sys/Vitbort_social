@@ -7,17 +7,22 @@ import com.radkevich.Messenger.model.Views;
 import com.radkevich.Messenger.service.MessageService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8090")
@@ -75,4 +80,20 @@ public class MessageController {
         return new ResponseEntity<>(messageService.userMessages(), HttpStatus.OK);
     }
 
+    @GetMapping("/downloadFile/{id}/{fileName:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id, HttpServletRequest request) throws MalformedURLException {
+        Resource resource = messageService.loadFileAsResource(id);
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+        }
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
 }

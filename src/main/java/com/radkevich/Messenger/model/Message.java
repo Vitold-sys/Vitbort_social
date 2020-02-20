@@ -37,6 +37,9 @@ public class Message {
     private String filename;
 
     @JsonView(Views.Full.class)
+    private String fileDownloadUri;
+
+    @JsonView(Views.Full.class)
     private String author;
 
     @ManyToOne(fetch = FetchType.LAZY)

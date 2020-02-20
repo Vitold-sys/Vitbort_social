@@ -7,6 +7,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,6 +34,8 @@ public class Comment {
     private String tag;
 
     private String author;
+
+    private String fileDownloadUri;
 
     private String filename;
 }

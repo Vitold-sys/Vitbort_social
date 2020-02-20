@@ -45,6 +45,8 @@ public class Post {
 
     private String filename;
 
+    private String fileDownloadUri;
+
     private String author;
 
     @ManyToMany

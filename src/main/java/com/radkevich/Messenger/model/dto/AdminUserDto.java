@@ -37,6 +37,7 @@ public class AdminUserDto {
         adminUserDto.setEmail(user.getEmail());
         adminUserDto.setStatus(user.getStatus().name());
         adminUserDto.setGender(user.getGender());
+
         return adminUserDto;
     }
 }

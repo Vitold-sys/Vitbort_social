@@ -3,6 +3,7 @@ package com.radkevich.Messenger.service;
 
 import com.radkevich.Messenger.exceptions.NotFoundException;
 import com.radkevich.Messenger.filter.CustomRsqlVisitor;
+import com.radkevich.Messenger.model.Comment;
 import com.radkevich.Messenger.model.Message;
 import com.radkevich.Messenger.model.User;
 import com.radkevich.Messenger.repository.MessageRepo;
@@ -13,6 +14,8 @@ import cz.jirutka.rsql.parser.ast.Node;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -33,6 +39,9 @@ import java.util.UUID;
 public class MessageService extends FileSaver {
     @Value("${upload.path}")
     private String uploadPath;
+
+    @Value("${url.path}")
+    private String urlPath;
 
     @Autowired
     private UserRepository userRepository;
@@ -78,7 +87,8 @@ public class MessageService extends FileSaver {
         message.setCreationDate(LocalDateTime.now());
         saveFile(message, file);
         messageRepo.save(message);
-        return message;
+        message.setFileDownloadUri(urlPath + "messages/downloadFile/" + message.getId() + "/" + message.getFilename());
+        return messageRepo.save(message);
     }
 
     public void delete(Message message) {
@@ -98,6 +108,7 @@ public class MessageService extends FileSaver {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         messageFromDb.setAuthor(name);
+        messageFromDb.setFileDownloadUri(urlPath + "messages/downloadFile/" + messageFromDb.getId() + "/" + messageFromDb.getFilename());
         messageRepo.save(messageFromDb);
         return messageFromDb;
     }
@@ -108,5 +119,13 @@ public class MessageService extends FileSaver {
         User userCurrent = userRepository.findByUsername(name);
         Set<Message> messages = userCurrent.getMessages();
         return messages;
+    }
+
+    public Resource loadFileAsResource(Long id) throws MalformedURLException {
+        Message message = messageRepo.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
+        Path filePath =  Paths.get(uploadPath + "/" + message.getFilename())
+                .toAbsolutePath().normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+        return resource;
     }
 }
