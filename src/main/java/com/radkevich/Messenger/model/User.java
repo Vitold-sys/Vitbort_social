@@ -68,6 +68,8 @@ public class User {
 
     private String filename;
 
+    private String fileDownloadUri;
+
     @NotBlank(message = "Please check your info")
     @Length(max = 2048, message = "Info too long (more than 2kB)")
     private String info;

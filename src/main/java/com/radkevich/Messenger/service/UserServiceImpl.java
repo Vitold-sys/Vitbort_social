@@ -1,5 +1,6 @@
 package com.radkevich.Messenger.service;
 
+import com.radkevich.Messenger.exceptions.NotFoundException;
 import com.radkevich.Messenger.model.Role;
 import com.radkevich.Messenger.model.Status;
 import com.radkevich.Messenger.model.User;
@@ -7,17 +8,21 @@ import com.radkevich.Messenger.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +34,9 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Value("${upload.path.avatar}")
     private String uploadPathAvatar;
+
+    @Value("${url.path}")
+    private String urlPath;
 
     @Value("${send.message.path1}")
     private String uploadMessagePath;
@@ -56,11 +64,11 @@ public class UserServiceImpl implements UserService {
         user.setCreated(LocalDateTime.now());
         user.setUpdated(LocalDateTime.now());
         saveAvatar(user, file);
-        User registeredUser = userRepository.save(user);
+        userRepository.save(user);
+        user.setFileDownloadUri(urlPath + "downloadFile/" + user.getId());
         sendMessage(user);
-        log.info("IN register - user: {} successfully registered", registeredUser);
-
-        return registeredUser;
+        log.info("IN register - user: {} successfully registered", user);
+        return user;
     }
 
     private void sendMessage(User user) {
@@ -160,5 +168,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElse(null);
         user.getSubscribers().remove(currentUser);
         userRepository.save(user);
+    }
+
+    public Resource loadFileAsResource(Long id) throws MalformedURLException {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("No comment with such id"));
+        Path filePath = Paths.get(uploadPathAvatar + "/" + user.getFilename())
+                .toAbsolutePath().normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+        return resource;
     }
 }

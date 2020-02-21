@@ -2,9 +2,11 @@ package com.radkevich.Messenger.service;
 
 
 import com.radkevich.Messenger.model.User;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 
@@ -27,5 +29,7 @@ public interface UserService {
     void subscribe(Long id);
 
     void unsubscribe(Long id);
+
+    public Resource loadFileAsResource(Long id) throws MalformedURLException;
 
 }
