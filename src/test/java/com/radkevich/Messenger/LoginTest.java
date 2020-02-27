@@ -51,9 +51,6 @@ import com.radkevich.Messenger.model.User;
 public class LoginTest {
 
     @Autowired
-    private  AuthenticationManager authenticationManager;
-
-    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -62,27 +59,15 @@ public class LoginTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private Set<Role> roles;
-
     @Autowired
     private MessageRepo messageRepo;
 
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private UserController userController;
-
-    @Autowired
-    private AuthenticationController authenticationController;
-
-
     @Test
-    public void loginDeniedTest() throws Exception {
+    public void getListUsers() throws Exception {
         this.mockMvc.perform(get("/users"))
                 .andDo(print())
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("http://localhost/8090/login"));
+                .andExpect(status().isOk());
+
     }
 
 
