@@ -1,6 +1,7 @@
 package com.radkevich.Messenger.controller;
 
 
+import com.radkevich.Messenger.exception.ApiRequestException;
 import com.radkevich.Messenger.model.Post;
 import com.radkevich.Messenger.service.PostService;
 import io.swagger.annotations.ApiParam;
@@ -39,7 +40,8 @@ public class PostController {
     public ResponseEntity<List<Post>> main(@RequestParam(required = false, defaultValue = "") String filter,
                                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Post> posts = postService.filterPost(filter, pageable);
-        return ResponseEntity.ok(posts.getContent());
+        throw new ApiRequestException("eeeee Custom exception");
+       // return ResponseEntity.ok(posts.getContent());
     }
 
     @GetMapping("{id}")
